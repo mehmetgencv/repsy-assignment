@@ -8,7 +8,7 @@ A Spring Boot REST API for deploying and downloading packages, built with Java 2
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/mehmetgenc/repsy-assignment
+git clone https://github.com/mehmetgencv/repsy-assignment
 cd repsy-assignment
 ```
 
@@ -176,7 +176,7 @@ psql -h localhost -p 5434 -U postgres -d repsy
 
 ## 📚 Repositories & Artifacts
 
-- **GitHub**: [https://github.com/mehmetgenc/repsy-assignment](https://github.com/mehmetgenc/repsy-assignment)
+- **GitHub**: [https://github.com/mehmetgencv/repsy-assignment](https://github.com/mehmetgencv/repsy-assignment)
 - **Repsy Maven**:
     - `io.repsy:object-storage:1.1.0`
     - `io.repsy:file-system-storage:1.0.0`
