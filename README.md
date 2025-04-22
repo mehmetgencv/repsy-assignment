@@ -59,7 +59,7 @@ docker run -p 8080:8080 \
     -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5434/repsy \
     -e MINIO_URL=http://host.docker.internal:9000 \
     -e STORAGE_STRATEGY=object-storage \
-    repsy/repsy-api:latest
+    repo.repsy.io/mehmetgenc/default/repsy-api:latest
 ```
 
 ---

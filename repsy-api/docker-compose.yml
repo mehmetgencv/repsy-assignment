@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   app:
-    image: repsy-api:latest
+    image: repo.repsy.io/mehmetgenc/default/repsy-api:latest
     build:
       context: .
       dockerfile: Dockerfile
