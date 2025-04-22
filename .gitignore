@@ -1,0 +1,19 @@
+# Maven
+target/
+*.log
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE
+.idea/
+*.iml
+
+# Local storage
+C:/storage/
+
+# Docker
+*.tar
+/package/
+/package.rep
+/meta.json
