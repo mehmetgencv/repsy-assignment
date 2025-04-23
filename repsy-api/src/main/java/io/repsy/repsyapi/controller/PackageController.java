@@ -26,32 +26,24 @@ public class PackageController {
             @PathVariable String packageName,
             @PathVariable String version,
             @RequestParam("repFile") MultipartFile repFile,
-            @RequestParam("metaFile") MultipartFile metaFile) {
-        try {
-            packageService.uploadPackage(packageName, version, repFile, metaFile);
-            return ResponseEntity.ok("Package uploaded successfully");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.status(500).body("Failed to upload package: " + e.getMessage());
-        }
+            @RequestParam("metaFile") MultipartFile metaFile) throws IOException {
+
+        packageService.uploadPackage(packageName, version, repFile, metaFile);
+        return ResponseEntity.ok("Package uploaded successfully");
+
     }
 
     @GetMapping("/{packageName}/{version}/{fileName}")
     public ResponseEntity<InputStreamResource> downloadPackage(
             @PathVariable String packageName,
             @PathVariable String version,
-            @PathVariable String fileName) {
-        try {
-            InputStream fileStream = packageService.downloadPackage(packageName, version, fileName);
-            return ResponseEntity.ok()
-                    .contentType(fileName.endsWith(".json") ? MediaType.APPLICATION_JSON : MediaType.APPLICATION_OCTET_STREAM)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                    .body(new InputStreamResource(fileStream));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (IOException e) {
-            return ResponseEntity.notFound().build();
-        }
+            @PathVariable String fileName) throws IOException {
+
+        InputStream fileStream = packageService.downloadPackage(packageName, version, fileName);
+        return ResponseEntity.ok()
+                .contentType(fileName.endsWith(".json") ? MediaType.APPLICATION_JSON : MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .body(new InputStreamResource(fileStream));
+
     }
 }

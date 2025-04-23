@@ -3,6 +3,8 @@ package io.repsy.repsyapi.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.repsy.repsyapi.dto.MetaJson;
 import io.repsy.repsyapi.entity.PackageEntity;
+import io.repsy.repsyapi.exception.PackageNotFoundException;
+import io.repsy.repsyapi.exception.PackageValidationException;
 import io.repsy.repsyapi.repository.PackageRepository;
 import io.repsy.storage.StorageService;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -30,24 +32,24 @@ public class PackageService {
     public void uploadPackage(String packageName, String version, MultipartFile repFile, MultipartFile metaFile) throws IOException {
 
         if (repFile == null || repFile.isEmpty()) {
-            throw new IllegalArgumentException("repFile is required");
+            throw new PackageValidationException("repFile is required");
         }
         if (metaFile == null || metaFile.isEmpty()) {
-            throw new IllegalArgumentException("metaFile is required");
+            throw new PackageValidationException("metaFile is required");
         }
         String repFileName = repFile.getOriginalFilename();
         String metaFileName = metaFile.getOriginalFilename();
 
         if (repFileName == null || !repFileName.endsWith(".rep")) {
-            throw new IllegalArgumentException("Invalid .rep file");
+            throw new PackageValidationException("Invalid .rep file");
         }
         if (metaFileName == null || !metaFileName.endsWith(".json")) {
-            throw new IllegalArgumentException("Invalid meta.json file");
+            throw new PackageValidationException("Invalid meta.json file");
         }
 
         try (ZipArchiveInputStream zipInput = new ZipArchiveInputStream(repFile.getInputStream())) {
             if (zipInput.getNextEntry() == null) {
-                throw new IllegalArgumentException("Invalid zip format for .rep file");
+                throw new PackageValidationException("Invalid zip format for .rep file");
             }
         }
 
@@ -55,10 +57,10 @@ public class PackageService {
         try {
             metaJson = objectMapper.readValue(metaFile.getInputStream(), MetaJson.class);
             if (!metaJson.getName().equals(packageName) || !metaJson.getVersion().equals(version)) {
-                throw new IllegalArgumentException("meta.json name or version does not match");
+                throw new PackageValidationException("meta.json name or version does not match");
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid meta.json format", e);
+            throw new PackageValidationException("Invalid meta.json format");
         }
 
         PackageEntity packageEntity = new PackageEntity();
@@ -74,8 +76,12 @@ public class PackageService {
 
     public InputStream downloadPackage(String packageName, String version, String fileName) throws IOException {
         if (!fileName.equals("package.rep") && !fileName.equals("meta.json")) {
-            throw new IllegalArgumentException("Invalid file name");
+            throw new PackageValidationException("Invalid file name");
         }
-        return storageService.getFile(packageName, version, fileName);
+        InputStream fileStream = storageService.getFile(packageName, version, fileName);
+        if (fileStream == null) {
+            throw new PackageNotFoundException("File not found: " + fileName);
+        }
+        return fileStream;
     }
 }

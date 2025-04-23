@@ -88,7 +88,7 @@ curl -X POST http://localhost:8080/mypackage/1.0.0 \
 ```
 
 **Responses**:
-- `201 Created`
+- `200 OK`
 - `400 Bad Request`
 - `500 Internal Server Error`
 
